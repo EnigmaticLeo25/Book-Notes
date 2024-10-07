@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> <!-- Google Fonts -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --background-color: #f5f7fa;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --text-light: #666666;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    padding: 20px;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+input[type="text"], select {
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-right: 10px;
+    width: 300px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    transition: var(--transition);
+}
+
+input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+.sort-form {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.book-card {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.book-cover {
+    width:75%;
+    height:375px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.book-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--secondary-color);
+}
+
+.book-author {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin: 0 0 15px;
+    font-weight: 400;
+}
+
+.book-info {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin: 5px 0;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.rating-stars {
+    color: #f1c40f;
+    font-size: 1.2rem;
+    margin-right: 5px;
+}
+
+.delete{
+    margin-top:30px;
+        background-color:#e12901;
+    }
+
+.delete:hover {
+    background-color: #800000;
+    transform: translateY(-2px);
+}
+@media (max-width: 768px) {
+    .book-list {
+        grid-template-columns: 1fr;
+    }
+
+    input[type="text"], select {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    form {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+    
+}
+    </style>
+</head>
+<body>
+    <h1>Book Tracker</h1>
+    <form action="/search" method="POST">
+        <input type="text" name="title" placeholder="Book Title" required>
+        <button type="submit">Add Book</button>
+    </form>
+    <div class="sort-form">
+        <form action="/sort" method="GET">
+            
+            <select id="sort" name="sort">
+                <option value="date">Date Read</option>
+                <option value="rating">Rating</option>
+            </select>
+            <button type="submit">Sort</button>
+        </form>
+    </div>
+    <h1>My Book List</h1>
+    <div class="book-list">
+        <% books.forEach(book => { %>
+            <div class="book-card">
+                <img src="<%= book.cover_url %>" alt="Cover of <%= book.title %>" class="book-cover">
+                <div class="book-details">
+                    <div class="book-title"><%= book.title %></div>
+                    <div class="book-author">by <%= book.author %></div>
+                    <p class="book-info">Your Rating: <%= book.rating ? book.rating : 'Not rated yet' %></p>
+                    <p class="book-info">Date Read: <%= book.date_read ? new Date(book.date_read).toLocaleDateString() : 'Not specified' %></p>
+                </div>
+                <form action="/delete/<%= book.id %>" method="POST">
+                    <button class="delete" type="submit">Delete</button>
+                </form>
+            </div>
+        <% }); %>
+    </div>
+</body>
+</html>
