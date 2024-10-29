@@ -63,8 +63,8 @@ button {
     background-color: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
+    border-radius: 7px;
+    padding: 5px 12px;
     font-size: 16px;
     cursor: pointer;
     transition: var(--transition);
@@ -154,11 +154,24 @@ button:hover {
 .delete{
     margin-top:30px;
         background-color:#e12901;
-    }
+}
 
 .delete:hover {
     background-color: #800000;
     transform: translateY(-2px);
+}
+
+.edit{
+    margin-top: 30px;
+    background-color: #2c3e50;
+}
+.edit:hover{
+    background-color: #333333;
+    transform: translateY(-2px);
+}
+.actions{
+    display: flex;
+    gap:10px;
 }
 @media (max-width: 768px) {
     .book-list {
@@ -204,13 +217,18 @@ button:hover {
                 <img src="<%= book.cover_url %>" alt="Cover of <%= book.title %>" class="book-cover">
                 <div class="book-details">
                     <div class="book-title"><%= book.title %></div>
-                    <div class="book-author">by <%= book.author %></div>
+                    <div class="book-author"><%= book.author %></div>
                     <p class="book-info">Your Rating: <%= book.rating ? book.rating : 'Not rated yet' %></p>
                     <p class="book-info">Date Read: <%= book.date_read ? new Date(book.date_read).toLocaleDateString() : 'Not specified' %></p>
                 </div>
-                <form action="/delete/<%= book.id %>" method="POST">
-                    <button class="delete" type="submit">Delete</button>
-                </form>
+                <div class="actions">
+                    <form action="/delete/<%= book.id %>" method="POST">
+                        <button class="delete" type="submit">Delete</button>
+                    </form>
+                    <form action="/edit/<%= book.id %>" method="POST">
+                        <button class="edit" type="submit">Edit</button>
+                    </form>
+                </div>
             </div>
         <% }); %>
     </div>

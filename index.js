@@ -99,6 +99,15 @@ app.post('/delete/:id', async (req, res) => {
     }
 });
 
+app.post('/edit/:id',async (req,res) => {
+    const id = req.params.id;
+    try{
+
+    }catch(err){
+        
+    }
+})
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
