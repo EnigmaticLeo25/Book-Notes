@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Collection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --transition: all 0.3s ease-in-out;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif; 
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6B8DD6 100%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        
+
+.book-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Changed from repeat(auto-fill) to single column */
+    gap: 2rem;
+    padding: 1rem;
+    max-width: 800px; /* Added to keep cards from getting too wide */
+    margin: 0 auto; /* Center the grid */
+}
+
+.book-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: row; /* Changed from column to row */
+    align-items: center;
+    gap: 2rem; /* Added space between image and content */
+}
+
+.book-cover {
+    width: 200px; /* Changed from 75% to fixed width */
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0; /* Removed margins */
+    flex-shrink: 0; /* Prevent image from shrinking */
+}
+
+.book-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Changed from center to flex-start */
+    text-align: left; /* Changed from center to left */
+}
+
+@media (max-width: 768px) {
+    .book-card {
+        flex-direction: column; /* Stack vertically on mobile */
+        padding: 15px;
+    }
+
+    .book-cover {
+        width: 75%; /* Make image wider on mobile */
+        height: 300px;
+        margin-bottom: 15px;
+    }
+
+    .book-details {
+        align-items: center; /* Center align text on mobile */
+        text-align: center;
+    }
+}
+
+
+
+        .book-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0 0 10px;
+            color: #1a1a1a;
+        }
+
+        .book-author {
+            font-size: 0.9rem;
+            color: #333333;
+            margin: 0 0 15px;
+            font-weight: 400;
+        }
+
+        .book-info {
+            font-size: 0.9rem;
+            color: #1a1a1a;
+            margin: 5px 0;
+        }
+
+        .stars {
+            color: #f1c40f;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin: 0 2px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .book-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .book-cover {
+                height: 300px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Library Collection</h1>
+        <div class="book-grid">
+            <% books.forEach(book => { %>
+                <div class="book-card">
+                    <img src="<%= book.cover_url %>" alt="<%= book.title %> cover" class="book-cover">
+                    <div class="book-details">
+                        <div class="book-title"><%= book.title %></div>
+                        <div class="book-author"><%= book.author %></div>
+                        <div class="book-info">
+                            Rating: 
+                            <span class="stars">
+                                <% for(let i = 1; i <= 5; i++) { %>
+                                    <% if (i <= book.rating) { %>
+                                        ★
+                                    <% } else { %>
+                                        ☆
+                                    <% } %>
+                                <% } %>
+                            </span>
+                            (<%= book.rating ? book.rating : 'Not rated yet' %>)
+                        </div>
+                        <p class="book-info">Date Read: <%= book.date_read ? new Date(book.date_read).toLocaleDateString() : 'Not specified' %></p>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    </div>
+</body>
+</html>

@@ -20,8 +20,14 @@
 }
 
 body {
+    background-color: #4158D0;
+    background-image: 
+        linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+    min-height: 100vh;
+
+
     font-family: 'Poppins', sans-serif;
-    background-color: var(--background-color);
+    
     color: var(--text-color);
     line-height: 1.6;
     padding: 20px;
@@ -30,10 +36,11 @@ body {
 
 h1 {
     text-align: center;
-    color: var(--secondary-color);
+    color: #ffffff; /* Changed to white for better contrast */
     font-weight: 600;
     margin-bottom: 30px;
     font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Added shadow for better readability */
 }
 
 form {
@@ -90,14 +97,38 @@ button:hover {
 }
 
 .book-card {
-    background-color: var(--card-background);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
     border-radius: 12px;
-    padding: 20px;
-    box-shadow: var(--shadow);
+    padding: 10px;
     transition: var(--transition);
     display: flex;
     flex-direction: column;
-    align-items: baseline;
+    align-items: center; /* Changed from baseline to center */
+}
+
+.book-cover {
+    width: 75%;
+    height: 375px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    display: block; /* Added to ensure proper centering */
+    margin-left: auto; /* Added for horizontal centering */
+    margin-right: auto; /* Added for horizontal centering */
+}
+
+.book-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Added to ensure full width of text content */
+    align-items: center; /* Added to center text content */
+    text-align: center; /* Added to center text content */
 }
 
 .book-card:hover {
@@ -105,37 +136,31 @@ button:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.book-cover {
-    width:75%;
-    height:375px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 15px;
-}
-
-.book-details {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+.stars {
+    color: #f1c40f; /* Brighter, more saturated yellow */
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2); /* Added shadow for better contrast */
+    font-size: 1.2rem;
+    letter-spacing: 1px; /* Reduced from 2px to 1px */
+    margin: 0 2px; /* Reduced from 5px to 2px */
 }
 
 .book-title {
     font-size: 1.2rem;
     font-weight: 600;
     margin: 0 0 10px;
-    color: var(--secondary-color);
+    color: #1a1a1a; /* Darker color for better contrast */
 }
 
 .book-author {
     font-size: 0.9rem;
-    color: var(--text-light);
+    color: #333333; /* Darker color for better contrast */
     margin: 0 0 15px;
     font-weight: 400;
 }
 
 .book-info {
     font-size: 0.9rem;
-    color: var(--text-color);
+    color: #1a1a1a; /* Darker color for better contrast */
     margin: 5px 0;
 }
 
@@ -148,7 +173,7 @@ button:hover {
 .rating-stars {
     color: #f1c40f;
     font-size: 1.2rem;
-    margin-right: 5px;
+    margin-right: 2px;
 }
 
 .delete{
@@ -218,7 +243,15 @@ button:hover {
                 <div class="book-details">
                     <div class="book-title"><%= book.title %></div>
                     <div class="book-author"><%= book.author %></div>
-                    <p class="book-info">Your Rating: <%= book.rating ? book.rating : 'Not rated yet' %></p>
+                    <p class="book-info">Your Rating: <span class="stars">
+                        <% for(let i = 1; i <= 5; i++) { %>
+                            <% if (i <= book.rating) { %>
+                                ★
+                            <% } else { %>
+                                ☆
+                            <% } %>
+                        <% } %>
+                    </span>(<%= book.rating ? book.rating : 'Not rated yet' %>)</p>
                     <p class="book-info">Date Read: <%= book.date_read ? new Date(book.date_read).toLocaleDateString() : 'Not specified' %></p>
                 </div>
                 <div class="actions">

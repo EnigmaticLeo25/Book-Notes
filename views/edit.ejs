@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> <!-- Google Fonts -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  
+  <title>Add Book Details</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    :root {
+      --primary-color: #1e90ff;
+      --secondary-color: #2980b9;
+      --background-color: #f8f8f8;
+      --text-color: #333;
+      --card-background: #fff;
+      --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    body {
+
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+      margin: 0;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: var(--card-background);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    .form-container h1 {
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: var(--secondary-color);
+      font-weight: 600;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 25px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--text-color);
+      font-weight: 500;
+    }
+    .form-group input {
+      width: 90%;
+      margin:0 auto;
+      padding: 12px 15px;
+      font-size: 1rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      transition: var(--transition);
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    .submit-btn {
+      padding: 12px 24px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+      transition: var(--transition);
+      width: 100%;
+    }
+    .submit-btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+    }
+    .flatpickr-calendar {
+      background: var(--card-background);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .flatpickr-day.selected {
+      background: var(--primary-color) !important;
+      border-color: var(--primary-color) !important;
+    }
+  
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Edit Details for <%= book.title %></h1>
+    <form action="/save/<%= book.id %>" method="POST">
+      <input type="hidden" name="title" value="<%= book.title %>">
+      <input type="hidden" name="author_name" value="<%= book.author %>">
+      <input type="hidden" name="cover_i" value="<%= book.cover_url %>">
+      <input type="hidden" name="key" value="<%= book.id %>">
+
+      <div class="form-group">
+        <label for="rating">Rating (1-5)</label>
+        <input type="number" id="rating" name="rating" min="1" max="5" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date_read">Date Read</label>
+        <input type="date" id="date_read" name="date_read" required>
+      </div>
+
+      <button type="submit" class="submit-btn">Save Book</button>
+    </form>
+  </div>
+  <script>
+    flatpickr("#date_read", {
+      dateFormat: "Y-m-d",
+      altInput: true,
+      altFormat: "F j, Y",
+      theme: "light"
+    });
+  </script>
+</body>
+</html>

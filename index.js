@@ -1,114 +1,145 @@
-import express from "express"
-import axios from "axios"
-import bodyParser from "body-parser"
-import pg from "pg"
+import express from "express";
+import axios from "axios";
+import bodyParser from "body-parser";
+import pg from "pg";
 
-const app = express()
-app.use(bodyParser.urlencoded({extended: true}))
-app.use(express.static("public"))
+const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
 
 const db = new pg.Client({
-    user:'postgres',
-    host:'localhost',
-    database:'book_app',
-    password:'Ethan@q25',
-    port:5432
-})
+  user: "postgres",
+  host: "localhost",
+  database: "book_app",
+  password: "Ethan@q25",
+  port: 5432,
+});
 
-db.connect()
+db.connect();
 
-app.get('/',async (req,res)=>{
-    try{
-        const result = await db.query("select * from books order by date_read desc")
-        
-        res.render('index.ejs',{books:result.rows})
-    }
-    catch(err){
-        console.error(err)
-        res.send('Error fetching books')
-    }
-})
+app.get("/", async (req, res) => {
+  try {
+    const result = await db.query(
+      "select * from books order by date_read desc"
+    );
 
-app.post('/search',async (req,res)=>{
-    const title = req.body.title;
-    try{
-        const result = await axios.get(`https://openlibrary.org/search.json?title=${encodeURIComponent(title)}`)
-        const books = result.data.docs.slice(0,10)
-        res.render('search.ejs',{books,title})
-    }catch(err){
-        console.error('Error searching for books:', error);
-    res.send('Error occurred while searching for books.');
-    }
-})
+    res.render("index.ejs", { books: result.rows });
+  } catch (err) {
+    console.error(err);
+    res.send("Error fetching books");
+  }
+});
 
-app.post('/add-to-list',async (req,res)=>{
-    const { title, author_name, cover_i, key } = req.body;
-    
-    res.render('add.ejs',{ title, author_name, cover_i, key })
+app.post("/search", async (req, res) => {
+  const title = req.body.title;
+  try {
+    const result = await axios.get(
+      `https://openlibrary.org/search.json?title=${encodeURIComponent(title)}`
+    );
+    const books = result.data.docs.slice(0, 10);
+    res.render("search.ejs", { books, title });
+  } catch (err) {
+    console.error("Error searching for books:", error);
+    res.send("Error occurred while searching for books.");
+  }
+});
 
-})
+app.post("/add-to-list", async (req, res) => {
+  const { title, author_name, cover_i, key } = req.body;
 
-app.post('/save', async (req,res)=>{
-    const { title, author_name, cover_i, key, rating, date_read } = req.body;
-    const cover_url = cover_i ? `https://covers.openlibrary.org/b/id/${cover_i}-M.jpg` : null;
-    try {
-        // Insert book into PostgreSQL database
-        const insertQuery = `
+  res.render("add.ejs", { title, author_name, cover_i, key });
+});
+
+app.post("/save", async (req, res) => {
+  const { title, author_name, cover_i, key, rating, date_read } = req.body;
+  const cover_url = cover_i
+    ? `https://covers.openlibrary.org/b/id/${cover_i}-M.jpg`
+    : null;
+  try {
+    // Insert book into PostgreSQL database
+    const insertQuery = `
             INSERT INTO books (title, author, cover_url, openlibrary_id, rating, date_read)
             VALUES ($1, $2, $3, $4, $5, $6);
         `;
-        await db.query(insertQuery, [title, author_name, cover_url, key, rating, date_read]);
-        
-        res.redirect('/');  // Redirect to book list after successful save
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Error saving book to the database');
-    }
-})
+    await db.query(insertQuery, [
+      title,
+      author_name,
+      cover_url,
+      key,
+      rating,
+      date_read,
+    ]);
 
-app.get('/sort', async (req, res) => {
-    const sortOption = req.query.sort;
-    let sortBy = 'date_read'; // Default sort by date_read
-    let sortOrder = 'ASC'; // Default order
-
-    if (sortOption === 'rating') {
-        sortBy = 'rating';
-        sortOrder = 'DESC'; // Highest rating first
-    }
-
-    try {
-        const result = await db.query(`SELECT * FROM books ORDER BY ${sortBy} ${sortOrder}`);
-        const books = result.rows;
-
-        // Render the book list with sorted books
-        res.render('index.ejs', { books }); // Update with your EJS template name
-    } catch (error) {
-        console.error('Error fetching sorted books:', error);
-        res.status(500).send('Internal Server Error');
-    }
+    res.redirect("/"); // Redirect to book list after successful save
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error saving book to the database");
+  }
 });
 
-app.post('/delete/:id', async (req, res) => {
-    const id = req.params.id;
-    try {
-        await db.query('DELETE FROM books WHERE id = $1', [id]);
-        res.redirect('/');
-    } catch (err) {
-        console.error(err);
-        res.send('Error deleting book');
-    }
+app.get("/sort", async (req, res) => {
+  const sortOption = req.query.sort;
+  let sortBy = "date_read"; // Default sort by date_read
+  let sortOrder = "ASC"; // Default order
+
+  if (sortOption === "rating") {
+    sortBy = "rating";
+    sortOrder = "DESC"; // Highest rating first
+  }
+
+  try {
+    const result = await db.query(
+      `SELECT * FROM books ORDER BY ${sortBy} ${sortOrder}`
+    );
+    const books = result.rows;
+
+    // Render the book list with sorted books
+    res.render("index.ejs", { books }); // Update with your EJS template name
+  } catch (error) {
+    console.error("Error fetching sorted books:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
-app.post('/edit/:id',async (req,res) => {
-    const id = req.params.id;
-    try{
+app.post("/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    await db.query("DELETE FROM books WHERE id = $1", [id]);
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    res.send("Error deleting book");
+  }
+});
 
-    }catch(err){
-        
-    }
-})
+app.post("/edit/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await db.query("select * from books where id = $1", [id]);
+    const book = result.rows;
+    
+    res.render("edit.ejs", { book: book[0] });
+  } catch (err) {}
+});
+
+app.post("/save/:id", async (req, res) => {
+  const id = req.params.id;
+  const { rating, date_read } = req.body;
+  try {
+    await db.query("UPDATE books SET rating = $1, date_read = $2 WHERE id = $3", [rating, date_read, id]);
+    res.redirect("/");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error updating book");
+  }
+});
+
+app.get("/actual", async (req, res) => {
+  const result = await db.query("select * from books order by date_read desc");
+  res.render("actual.ejs", { books: result.rows });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
