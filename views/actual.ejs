@@ -58,15 +58,32 @@
     flex-direction: row; /* Changed from column to row */
     align-items: center;
     gap: 2rem; /* Added space between image and content */
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.book-card.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .book-cover {
-    width: 200px; /* Changed from 75% to fixed width */
+    width: 200px;
     height: 300px;
     object-fit: cover;
     border-radius: 8px;
-    margin: 0; /* Removed margins */
-    flex-shrink: 0; /* Prevent image from shrinking */
+    margin: 0;
+    flex-shrink: 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2),  /* Regular shadow */
+                0 8px 16px rgba(0, 0, 0, 0.1);  /* Larger, softer shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-cover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3),  /* Enhanced shadow on hover */
+                0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 .book-details {
@@ -143,11 +160,118 @@
                 font-size: 2rem;
             }
         }
+
+        .intro-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .intro-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .intro-text {
+            color: #ffffff;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin: 1.5rem 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #ffffff;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .intro-section {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .stats-container {
+                gap: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+
+        .book-review {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .review-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #444;
+            margin: 0;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Library Collection</h1>
+        <div class="intro-section">
+            <div class="intro-content">
+                <h1>Library Collection</h1>
+                <p class="intro-text">Welcome to my personal reading journey! I'm Ethan, a software developer and avid reader. This digital library catalogs my reading adventures, complete with ratings and reflections on each book I've encountered.</p>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span class="stat-number"><%= books.length %></span>
+                        <span class="stat-label">Books Read</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number"><%= new Date().getFullYear() %></span>
+                        <span class="stat-label">Reading Since</span>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="book-grid">
             <% books.forEach(book => { %>
                 <div class="book-card">
@@ -169,10 +293,28 @@
                             (<%= book.rating ? book.rating : 'Not rated yet' %>)
                         </div>
                         <p class="book-info">Date Read: <%= book.date_read ? new Date(book.date_read).toLocaleDateString() : 'Not specified' %></p>
+                        <div class="book-review">
+                            <p class="review-text"><%= book.review || 'No review yet.' %></p>
+                        </div>
                     </div>
                 </div>
             <% }) %>
         </div>
     </div>
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.book-card').forEach((card) => {
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>

@@ -51,15 +51,15 @@ app.post("/add-to-list", async (req, res) => {
 });
 
 app.post("/save", async (req, res) => {
-  const { title, author_name, cover_i, key, rating, date_read } = req.body;
+  const { title, author_name, cover_i, key, rating, date_read, review } = req.body;
   const cover_url = cover_i
     ? `https://covers.openlibrary.org/b/id/${cover_i}-M.jpg`
     : null;
   try {
     // Insert book into PostgreSQL database
     const insertQuery = `
-            INSERT INTO books (title, author, cover_url, openlibrary_id, rating, date_read)
-            VALUES ($1, $2, $3, $4, $5, $6);
+            INSERT INTO books (title, author, cover_url, openlibrary_id, rating, date_read, review)
+            VALUES ($1, $2, $3, $4, $5, $6, $7);
         `;
     await db.query(insertQuery, [
       title,
@@ -68,6 +68,7 @@ app.post("/save", async (req, res) => {
       key,
       rating,
       date_read,
+      review,
     ]);
 
     res.redirect("/"); // Redirect to book list after successful save
