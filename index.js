@@ -26,7 +26,7 @@ db.connect((err) => {
 const app = express();
 
 // Add this line to trust Render's proxy
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
 // Add body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -42,49 +42,31 @@ const loginLimiter = rateLimit({
   max: 5, // 5 attempts per window
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-  message: 'Too many login attempts. Please try again after 15 minutes.'
+  message: "Too many login attempts. Please try again after 15 minutes.",
 });
 
 // Initialize PostgreSQL session store
-const PostgresqlStore = pgSession(session);  // This is the correct way to initialize
+const PostgresqlStore = pgSession(session); // This is the correct way to initialize
 
 // Session configuration
 app.use(
   session({
     store: new PostgresqlStore({
       pool: db,
-      tableName: 'user_sessions',
-      createTableIfMissing: true
+      tableName: "user_sessions",
+      createTableIfMissing: true,
     }),
-    secret: process.env.SESSION_SECRET || 'your-secure-session-secret',
+    secret: process.env.SESSION_SECRET || "your-secure-session-secret",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
   })
 );
 
-// Make sure sessions table exists
-const createSessionTable = `
-CREATE TABLE IF NOT EXISTS "user_sessions" (
-  "sid" varchar NOT NULL COLLATE "default",
-  "sess" json NOT NULL,
-  "expire" timestamp(6) NOT NULL
-)
-WITH (OIDS=FALSE);
-
-ALTER TABLE "user_sessions" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "user_sessions" ("expire");
-`;
-
-db.query(createSessionTable)
-  .then(() => console.log('Session table created if it didn\'t exist'))
-  .catch(err => console.error('Error creating session table:', err));
-
-// Middleware to check authentication
 function checkAuth(req, res, next) {
   if (req.session.isAuthenticated) {
     next();
