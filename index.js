@@ -6,7 +6,6 @@ import session from "express-session";
 import rateLimit from "express-rate-limit";
 import pgSession from "connect-pg-simple";
 import dotenv from "dotenv";
-import e from "express";
 
 dotenv.config();
 
