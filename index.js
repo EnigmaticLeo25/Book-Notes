@@ -48,7 +48,7 @@ const loginLimiter = rateLimit({
 // Session configuration
 app.use(
   session({
-    store: new PgSession({
+    store: new pgSession({
       pool: db, // Use the same postgres db
       tableName: "user_sessions", // Table to store sessions
     }),
