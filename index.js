@@ -24,7 +24,9 @@ db.connect((err) => {
   }
 });
 const app = express();
-const PgSession = pgSession(session);
+
+// Add this line to trust Render's proxy
+app.set('trust proxy', 1);
 
 // Add body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,7 +40,9 @@ app.set("view engine", "ejs");
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // 5 attempts per window
-  message: "Too many login attempts. Please try again after 15 minutes.",
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: 'Too many login attempts. Please try again after 15 minutes.'
 });
 
 // Session configuration
