@@ -6,18 +6,24 @@ import session from "express-session";
 import rateLimit from "express-rate-limit";
 import pgSession from "connect-pg-simple";
 import dotenv from "dotenv";
+import e from "express";
 
 dotenv.config();
 
 // Add database configuration
 const db = new pg.Pool({
-  url: process.env.EURL,
-  port: process.env.DB_PORT || 5432,
+  connectionString: process.env.EURL,
   ssl: {
     rejectUnauthorized: false,
   },
 });
-
+db.connect((err) => {
+  if (err) {
+    throw err;
+  } else {
+    console.log("Connected.");
+  }
+});
 const app = express();
 const PgSession = pgSession(session);
 
