@@ -46,7 +46,7 @@ const loginLimiter = rateLimit({
 });
 
 // Initialize PostgreSQL session store
-const PostgresqlStore = pgSession(session); // This is the correct way to initialize
+const PostgresqlStore = pgSession(session);
 
 // Session configuration
 app.use(
@@ -76,7 +76,7 @@ function checkAuth(req, res, next) {
 }
 
 // Apply rate limiter to admin route
-app.post("/admin", loginLimiter, (req, res) => {
+app.post("/login", loginLimiter, (req, res) => {
   const { password } = req.body;
 
   if (password === process.env.ADMIN_PASSWORD) {
@@ -94,7 +94,7 @@ app.post("/admin", loginLimiter, (req, res) => {
 });
 
 // Protected routes
-app.get("/login", checkAuth, async (req, res) => {
+app.get("/admin", checkAuth, async (req, res) => {
   try {
     const result = await db.query(
       "select * from books order by date_read desc"
@@ -230,7 +230,7 @@ app.get("/", async (req, res) => {
   res.render("actual.ejs", { books: result.rows });
 });
 
-app.get("/admin", (req, res) => {
+app.get("/login", (req, res) => {
   res.render("login.ejs");
 });
 
