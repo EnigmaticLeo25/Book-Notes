@@ -71,7 +71,7 @@ function checkAuth(req, res, next) {
   if (req.session.isAuthenticated) {
     next();
   } else {
-    res.redirect("/admin");
+    res.redirect("/login");
   }
 }
 
@@ -86,7 +86,7 @@ app.post("/login", loginLimiter, (req, res) => {
         console.error("Session save error:", err);
         return res.status(500).send("Error logging in");
       }
-      res.redirect("/login");
+      res.redirect("/admin");
     });
   } else {
     res.render("login.ejs", { error: "Invalid password" });
