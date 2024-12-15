@@ -106,13 +106,13 @@
         <button type="submit" class="submit-btn">Save Book</button>
       </form>
     </div>
+    <script>
+      flatpickr("#date_read", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "F j, Y",
+        theme: "light",
+      });
+    </script>
   </body>
-  <script>
-    flatpickr("#date_read", {
-      dateFormat: "Y-m-d",
-      altInput: true,
-      altFormat: "F j, Y",
-      theme: "light",
-    });
-  </script>
 </html>
