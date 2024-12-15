@@ -1,320 +1,342 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Library Collection</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ethan's Book Shelf</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --transition: all 0.3s ease-in-out;
+      :root {
+        --transition: all 0.3s ease-in-out;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 50%,
+          #6b8dd6 100%
+        );
+        background-attachment: fixed;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      h1 {
+        text-align: center;
+        color: #ffffff;
+        font-weight: 600;
+        margin-bottom: 30px;
+        font-size: 2.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .book-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* Changed from repeat(auto-fill) to single column */
+        gap: 2rem;
+        padding: 1rem;
+        max-width: 800px; /* Added to keep cards from getting too wide */
+        margin: 0 auto; /* Center the grid */
+      }
+
+      .book-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        border-radius: 12px;
+        padding: 20px;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: row; /* Changed from column to row */
+        align-items: center;
+        gap: 2rem; /* Added space between image and content */
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+
+      .book-card.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .book-cover {
+        width: 200px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin: 0;
+        flex-shrink: 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2),
+          /* Regular shadow */ 0 8px 16px rgba(0, 0, 0, 0.1); /* Larger, softer shadow */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .book-cover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3),
+          /* Enhanced shadow on hover */ 0 12px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .book-details {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Changed from center to flex-start */
+        text-align: left; /* Changed from center to left */
+      }
+
+      @media (max-width: 768px) {
+        .book-card {
+          flex-direction: column; /* Stack vertically on mobile */
+          padding: 15px;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif; 
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #6B8DD6 100%);
-            background-attachment: fixed;
+        .book-cover {
+          width: 75%; /* Make image wider on mobile */
+          height: 300px;
+          margin-bottom: 15px;
         }
 
+        .book-details {
+          align-items: center; /* Center align text on mobile */
+          text-align: center;
+        }
+      }
+
+      .book-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 0 0 10px;
+        color: #1a1a1a;
+      }
+
+      .book-author {
+        font-size: 0.9rem;
+        color: #333333;
+        margin: 0 0 15px;
+        font-weight: 400;
+      }
+
+      .book-info {
+        font-size: 0.9rem;
+        color: #1a1a1a;
+        margin: 5px 0;
+      }
+
+      .stars {
+        color: #f1c40f;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        margin: 0 2px;
+      }
+
+      @media (max-width: 768px) {
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
+          padding: 1rem;
+        }
+
+        .book-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 1rem;
+        }
+
+        .book-cover {
+          height: 300px;
         }
 
         h1 {
-            text-align: center;
-            color: #ffffff;
-            font-weight: 600;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+          font-size: 2rem;
         }
+      }
 
-        
+      .intro-section {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: fadeIn 0.8s ease-out;
+      }
 
-.book-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* Changed from repeat(auto-fill) to single column */
-    gap: 2rem;
-    padding: 1rem;
-    max-width: 800px; /* Added to keep cards from getting too wide */
-    margin: 0 auto; /* Center the grid */
-}
+      .intro-content {
+        max-width: 800px;
+        margin: 0 auto;
+      }
 
-.book-card {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-    border-radius: 12px;
-    padding: 20px;
-    transition: var(--transition);
-    display: flex;
-    flex-direction: row; /* Changed from column to row */
-    align-items: center;
-    gap: 2rem; /* Added space between image and content */
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-}
+      .intro-text {
+        color: #ffffff;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin: 1.5rem 0;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
 
-.book-card.show {
-    opacity: 1;
-    transform: translateY(0);
-}
+      .stats-container {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        margin-top: 2rem;
+      }
 
-.book-cover {
-    width: 200px;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin: 0;
-    flex-shrink: 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2),  /* Regular shadow */
-                0 8px 16px rgba(0, 0, 0, 0.1);  /* Larger, softer shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #ffffff;
+      }
 
-.book-cover:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3),  /* Enhanced shadow on hover */
-                0 12px 24px rgba(0, 0, 0, 0.15);
-}
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
 
-.book-details {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Changed from center to flex-start */
-    text-align: left; /* Changed from center to left */
-}
+      .stat-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+      }
 
-@media (max-width: 768px) {
-    .book-card {
-        flex-direction: column; /* Stack vertically on mobile */
-        padding: 15px;
-    }
-
-    .book-cover {
-        width: 75%; /* Make image wider on mobile */
-        height: 300px;
-        margin-bottom: 15px;
-    }
-
-    .book-details {
-        align-items: center; /* Center align text on mobile */
-        text-align: center;
-    }
-}
-
-
-
-        .book-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin: 0 0 10px;
-            color: #1a1a1a;
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
         }
-
-        .book-author {
-            font-size: 0.9rem;
-            color: #333333;
-            margin: 0 0 15px;
-            font-weight: 400;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        .book-info {
-            font-size: 0.9rem;
-            color: #1a1a1a;
-            margin: 5px 0;
-        }
-
-        .stars {
-            color: #f1c40f;
-            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
-            font-size: 1.2rem;
-            letter-spacing: 1px;
-            margin: 0 2px;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            .book-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 1rem;
-            }
-
-            .book-cover {
-                height: 300px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-        }
-
+      @media (max-width: 768px) {
         .intro-section {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 2rem;
-            margin-bottom: 3rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .intro-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .intro-text {
-            color: #ffffff;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin: 1.5rem 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+          padding: 1.5rem;
+          margin: 1rem;
         }
 
         .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-top: 2rem;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #ffffff;
+          gap: 2rem;
         }
 
         .stat-number {
-            font-size: 2.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
+          font-size: 2rem;
         }
+      }
 
-        .stat-label {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
+      .book-review {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        width: 100%;
+      }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .intro-section {
-                padding: 1.5rem;
-                margin: 1rem;
-            }
-            
-            .stats-container {
-                gap: 2rem;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-        }
-
-        .book-review {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            width: 100%;
-        }
-
-        .review-text {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #444;
-            margin: 0;
-            text-align: left;
-        }
+      .review-text {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: #444;
+        margin: 0;
+        text-align: left;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="intro-section">
-            <div class="intro-content">
-                <h1>Library Collection</h1>
-                <p class="intro-text">Welcome to my personal reading journey! I'm Ethan, a software developer and avid reader. This digital library catalogs my reading adventures, complete with ratings and reflections on each book I've encountered.</p>
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <span class="stat-number"><%= books.length %></span>
-                        <span class="stat-label">Books Read</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number"><%= new Date().getFullYear() %></span>
-                        <span class="stat-label">Reading Since</span>
-                    </div>
-                </div>
+      <div class="intro-section">
+        <div class="intro-content">
+          <h1>Ethan's Book Shelf</h1>
+          <p class="intro-text">
+            Hi, I'm Ethan D'Sa, a 20-year-old book lover and computer science
+            engineering student with a passion for storytelling and technology.
+            This site is my way of sharing all the books I've read, complete
+            with personal reviews, reflections, and recommendations. As someone
+            who loves exploring ideas—both through stories and code—I've built
+            this site to blend my interests in reading and tech. Here, you'll
+            find everything from thought-provoking classics to modern thrillers
+            and non-fiction gems. With my background in computer science, I've
+            made this platform clean, user-friendly, and responsive, so it's
+            easy for anyone to browse. Whether you're into literature,
+            self-help, or sci-fi, I hope you'll discover something new to enjoy.
+            Let's explore the world of books together!
+          </p>
+          <div class="stats-container">
+            <div class="stat-item">
+              <span class="stat-number"><%= books.length %></span>
+              <span class="stat-label">Books Read</span>
             </div>
+            <div class="stat-item">
+              <span class="stat-number"><%= new Date().getFullYear() %></span>
+              <span class="stat-label">Reading Since</span>
+            </div>
+          </div>
         </div>
-        <div class="book-grid">
-            <% books.forEach(book => { %>
-                <div class="book-card">
-                    <img src="<%= book.cover_url %>" alt="<%= book.title %> cover" class="book-cover">
-                    <div class="book-details">
-                        <div class="book-title"><%= book.title %></div>
-                        <div class="book-author"><%= book.author %></div>
-                        <div class="book-info">
-                            Rating: 
-                            <span class="stars">
-                                <% for(let i = 1; i <= 5; i++) { %>
-                                    <% if (i <= book.rating) { %>
-                                        ★
-                                    <% } else { %>
-                                        ☆
-                                    <% } %>
-                                <% } %>
-                            </span>
-                            (<%= book.rating ? book.rating : 'Not rated yet' %>)
-                        </div>
-                        <p class="book-info">Date Read: <%= book.date_read ? new Date(book.date_read).toLocaleDateString() : 'Not specified' %></p>
-                        <div class="book-review">
-                            <p class="review-text"><%= book.review || 'No review yet.' %></p>
-                        </div>
-                    </div>
-                </div>
-            <% }) %>
+      </div>
+      <div class="book-grid">
+        <% books.forEach(book => { %>
+        <div class="book-card">
+          <img
+            src="<%= book.cover_url %>"
+            alt="<%= book.title %> cover"
+            class="book-cover"
+          />
+          <div class="book-details">
+            <div class="book-title"><%= book.title %></div>
+            <div class="book-author"><%= book.author %></div>
+            <div class="book-info">
+              Rating:
+              <span class="stars">
+                <% for(let i = 1; i <= 5; i++) { %> <% if (i <= book.rating) {
+                %> ★ <% } else { %> ☆ <% } %> <% } %>
+              </span>
+              (<%= book.rating ? book.rating : 'Not rated yet' %>)
+            </div>
+            <p class="book-info">
+              Date Read: <%= book.date_read ? new
+              Date(book.date_read).toLocaleDateString() : 'Not specified' %>
+            </p>
+            <div class="book-review">
+              <p class="review-text"><%= book.review || 'No review yet.' %></p>
+            </div>
+          </div>
         </div>
+        <% }) %>
+      </div>
     </div>
     <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('show');
-                }
-            });
-        }, {
-            threshold: 0.1
-        });
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("show");
+            }
+          });
+        },
+        {
+          threshold: 0.1,
+        }
+      );
 
-        document.querySelectorAll('.book-card').forEach((card) => {
-            observer.observe(card);
-        });
+      document.querySelectorAll(".book-card").forEach((card) => {
+        observer.observe(card);
+      });
     </script>
-</body>
+  </body>
 </html>
