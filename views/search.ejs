@@ -90,8 +90,8 @@
         <div class="book-info">
           <div class="book-title"><%= book.title %></div>
           <div class="book-author">
-            <%= book.author_name ? book.author_name.join(', ') : 'Unknown
-            Author' %>
+            <%= book.author_name ? book.author_name.join(', ') : 'UnknownAuthor'
+            %>
           </div>
           <form action="/add-to-list" method="POST">
             <input type="hidden" name="title" value="<%= book.title %>" />
