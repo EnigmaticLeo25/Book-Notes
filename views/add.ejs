@@ -4,11 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Book Details</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
-    />
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -54,17 +50,6 @@
       .submit-btn:hover {
         background-color: #1c7ed6;
       }
-      .flatpickr-calendar {
-        background: var(--card-background);
-        border-radius: 8px;
-        box-shadow: var(--shadow);
-        font-family: "Poppins", sans-serif;
-      }
-
-      .flatpickr-day.selected {
-        background: var(--primary-color) !important;
-        border-color: var(--primary-color) !important;
-      }
     </style>
   </head>
   <body>
@@ -106,13 +91,5 @@
         <button type="submit" class="submit-btn">Save Book</button>
       </form>
     </div>
-    <script>
-      flatpickr("#date_read", {
-        dateFormat: "Y-m-d",
-        altInput: true,
-        altFormat: "F j, Y",
-        theme: "light",
-      });
-    </script>
   </body>
 </html>
