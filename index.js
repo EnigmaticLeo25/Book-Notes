@@ -9,7 +9,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Add database configuration
 const db = new pg.Pool({
   connectionString: process.env.EURL,
   ssl: {
@@ -25,23 +24,20 @@ db.connect((err) => {
 });
 const app = express();
 
-// Add this line to trust Render's proxy
 app.set("trust proxy", 1);
 
-// Add body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-// Set view engine
 app.set("view engine", "ejs");
 
 // Rate limiter for login attempts
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts per window
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: "Too many login attempts. Please try again after 15 minutes.",
 });
 
@@ -75,7 +71,6 @@ function checkAuth(req, res, next) {
   }
 }
 
-// Apply rate limiter to admin route
 app.post("/login", loginLimiter, (req, res) => {
   const { password } = req.body;
 
@@ -93,7 +88,6 @@ app.post("/login", loginLimiter, (req, res) => {
   }
 });
 
-// Protected routes
 app.get("/admin", checkAuth, async (req, res) => {
   try {
     const result = await db.query(
@@ -158,7 +152,7 @@ app.post("/save", async (req, res) => {
       review,
     ]);
 
-    res.redirect("/"); // Redirect to book list after successful save
+    res.redirect("/admin");
   } catch (err) {
     console.error(err);
     res.status(500).send("Error saving book to the database");
@@ -181,8 +175,7 @@ app.get("/sort", async (req, res) => {
     );
     const books = result.rows;
 
-    // Render the book list with sorted books
-    res.render("index.ejs", { books }); // Update with your EJS template name
+    res.render("index.ejs", { books });
   } catch (error) {
     console.error("Error fetching sorted books:", error);
     res.status(500).send("Internal Server Error");
